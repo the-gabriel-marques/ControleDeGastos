@@ -1,68 +1,60 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { styles } from '../styles/styles';
-import { addGasto } from '../database/database';
+import { addGasto, updateGasto } from '../database/database';
 
-export default function AddExpenseScreen({ navigation }) {
-  const [descricao, setDescricao] = useState('');
-  const [categoria, setCategoria] = useState('');
-  const [valor, setValor] = useState('');
-  const [data, setData] = useState('');
+export default function AddExpenseScreen({ navigation, route }) {
+  const gastoEdit = route.params?.gasto || null;
+
+  const [descricao, setDescricao] = useState(gastoEdit ? gastoEdit.descricao : '');
+  const [categoria, setCategoria] = useState(gastoEdit ? gastoEdit.categoria : '');
+  const [valor, setValor] = useState(gastoEdit ? String(gastoEdit.valor) : '');
+  const [data, setData] = useState(gastoEdit ? gastoEdit.data : '');
 
   const handleSave = () => {
     if (!descricao.trim() || !categoria.trim() || !valor.trim() || !data.trim()) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      Alert.alert('Atenção', 'Preencha todos os campos!');
       return;
     }
 
-    const valorNumerico = parseFloat(valor.replace(',', '.'));
-
-    if (isNaN(valorNumerico) || valorNumerico <= 0) {
-      Alert.alert('Erro', 'O valor deve ser um número maior que zero.');
+    const valorNum = parseFloat(valor.replace(',', '.'));
+    if (isNaN(valorNum) || valorNum <= 0) {
+      Alert.alert('Erro', 'Valor inválido.O valor deve ser acima de 0');
       return;
     }
 
-    addGasto(descricao, categoria, valorNumerico, data, () => {
-      navigation.goBack();
-    });
+    Alert.alert("Salvar", "Confirmar os dados do gasto?", [
+      { text: "Cancelar", style: "cancel" },
+      { text: "Confirmar", onPress: () => {
+          if (gastoEdit) {
+            updateGasto(gastoEdit.id, descricao, categoria, valorNum, data, () => navigation.goBack());
+          } else {
+            addGasto(descricao, categoria, valorNum, data, () => navigation.goBack());
+          }
+        }
+      }
+    ]);
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.content}>
-        <TextInput
-          style={styles.input}
-          placeholder="Descrição (ex: Ração do cachorro, Ingresso teatro)"
-          value={descricao}
-          onChangeText={setDescricao}
-        />
+        <Text style={{ marginBottom: 5, fontWeight: 'bold' }}>Descrição</Text>
+        <TextInput style={styles.input} value={descricao} onChangeText={setDescricao} />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Categoria (ex: Alimentação, Lazer, Saúde)"
-          value={categoria}
-          onChangeText={setCategoria}
-        />
+        <Text style={{ marginBottom: 5, fontWeight: 'bold' }}>Categoria</Text>
+        <TextInput style={styles.input} value={categoria} onChangeText={setCategoria} />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Valor (R$)"
-          value={valor}
-          onChangeText={setValor}
-          keyboardType="numeric"
-        />
+        <Text style={{ marginBottom: 5, fontWeight: 'bold' }}>Valor (R$)</Text>
+        <TextInput style={styles.input} value={valor} onChangeText={setValor} keyboardType="numeric" />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Data (ex: 31/05/2026)"
-          value={data}
-          onChangeText={setData}
-        />
+        <Text style={{ marginBottom: 5, fontWeight: 'bold' }}>Data</Text>
+        <TextInput style={styles.input} value={data} onChangeText={setData} />
 
         <TouchableOpacity style={styles.button} onPress={handleSave}>
-          <Text style={styles.buttonText}>Salvar Gasto</Text>
+          <Text style={styles.buttonText}>{gastoEdit ? "Atualizar Gasto" : "Salvar Novo Gasto"}</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }

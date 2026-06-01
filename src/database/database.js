@@ -47,3 +47,15 @@ export const deleteGasto = (id, successCallback) => {
     console.log('Erro ao deletar gasto:', error);
   }
 };
+
+export const updateGasto = (id, descricao, categoria, valor, data, successCallback) => {
+  try {
+    const result = db.runSync(
+      'UPDATE gastos SET descricao = ?, categoria = ?, valor = ?, data = ? WHERE id = ?',
+      [descricao, categoria, valor, data, id]
+    );
+    successCallback(result);
+  } catch (error) {
+    console.log('Erro ao atualizar gasto:', error);
+  }
+};
