@@ -19,7 +19,7 @@ export default function AddExpenseScreen({ navigation, route }) {
 
     const valorNum = parseFloat(valor.replace(',', '.'));
     if (isNaN(valorNum) || valorNum <= 0) {
-      Alert.alert('Erro', 'Valor inválido.O valor deve ser acima de 0');
+      Alert.alert('Erro', 'Valor inválido. O valor deve ser acima de 0');
       return;
     }
 
@@ -49,7 +49,7 @@ export default function AddExpenseScreen({ navigation, route }) {
         <TextInput style={styles.input} value={valor} onChangeText={setValor} keyboardType="numeric" />
 
         <Text style={{ marginBottom: 5, fontWeight: 'bold' }}>Data</Text>
-        <TextInput style={styles.input} value={data} onChangeText={setData} />
+        <TextInput placeholder="dd/mm/aaaa" style={styles.input} value={data} onChangeText={setData} />
 
         <TouchableOpacity style={styles.button} onPress={handleSave}>
           <Text style={styles.buttonText}>{gastoEdit ? "Atualizar Gasto" : "Salvar Novo Gasto"}</Text>

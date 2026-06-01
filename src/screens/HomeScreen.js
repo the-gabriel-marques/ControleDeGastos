@@ -39,7 +39,6 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.header}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
           <Text style={styles.headerTitle}>Total de Gastos</Text>
-          {/* Botão de Tema Escuro e Sobre */}
           <View style={{ flexDirection: 'row', gap: 15 }}>
             <TouchableOpacity onPress={() => setIsDarkMode(!isDarkMode)}>
               <Ionicons name={isDarkMode ? "sunny" : "moon"} size={24} color="#FFF" />
@@ -53,7 +52,6 @@ export default function HomeScreen({ navigation }) {
       </View>
 
       <View style={styles.content}>
-        {/* Pesquisa e Filtro */}
         <View style={{ flexDirection: 'row', gap: 10, marginBottom: 10 }}>
           <TextInput 
             style={[styles.input, { flex: 1, marginBottom: 0 }]} 
